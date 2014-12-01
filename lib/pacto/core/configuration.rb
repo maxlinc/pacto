@@ -2,7 +2,7 @@
 module Pacto
   class Configuration
     attr_accessor :adapter, :strict_matchers,
-                  :contracts_path, :logger, :generator_options,
+                  :contracts_path, :logger, :log_bodies, :generator_options,
                   :hide_deprecations, :default_consumer, :default_provider,
                   :stenographer_log_file, :color, :proxy
     attr_reader :hook
@@ -20,6 +20,7 @@ module Pacto
       @contracts_path = '.'
       @logger = Logger::SimpleLogger.instance
       define_logger_level
+      @log_bodies = true if @logger.level = :debug
       @hook = Hook.new {}
       @generator_options = { schema_version: 'draft3' }
       @color = $stdout.tty?

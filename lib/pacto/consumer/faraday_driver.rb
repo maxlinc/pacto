@@ -1,4 +1,14 @@
 # -*- encoding : utf-8 -*-
+require 'faraday/response/pacto_logger'
+
+ENHANCED_FARADAY_VERSION = Gem::Version.new('0.9.1')
+if Gem::Version.new(Faraday::VERSION) >= ENHANCED_FARADAY_VERSION
+  LOGGER_MIDDLEWARE = :logger
+else
+  Faraday::Response.register_middleware :pacto_logger => Faraday::Response::PactoLogger
+  LOGGER_MIDDLEWARE = :pacto_logger
+end
+
 module Pacto
   class Consumer
     class FaradayDriver
@@ -8,7 +18,7 @@ module Pacto
         conn_options = { url: req.uri.site }
         conn_options[:proxy] = Pacto.configuration.proxy if Pacto.configuration.proxy
         conn = Faraday.new(conn_options) do |faraday|
-          faraday.response :logger if Pacto.configuration.logger.level == :debug
+          faraday.response LOGGER_MIDDLEWARE, logger, faraday_logger_options
           faraday.adapter Faraday.default_adapter
         end
 
@@ -31,6 +41,12 @@ module Pacto
           body: faraday_response.body
         }
         Pacto::PactoResponse.new(data)
+      end
+
+      def faraday_logger_options
+        {
+          :bodies => Pacto.configuration.log_bodies
+        }
       end
     end
   end
