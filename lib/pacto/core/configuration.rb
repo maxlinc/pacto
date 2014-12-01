@@ -20,7 +20,7 @@ module Pacto
       @contracts_path = '.'
       @logger = Logger::SimpleLogger.instance
       define_logger_level
-      @log_bodies = true if @logger.level = :debug
+      @log_bodies = true if @logger.level == :debug
       @hook = Hook.new {}
       @generator_options = { schema_version: 'draft3' }
       @color = $stdout.tty?
