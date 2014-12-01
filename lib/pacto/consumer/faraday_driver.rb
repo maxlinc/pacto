@@ -5,7 +5,7 @@ ENHANCED_FARADAY_VERSION = Gem::Version.new('0.9.1')
 if Gem::Version.new(Faraday::VERSION) >= ENHANCED_FARADAY_VERSION
   LOGGER_MIDDLEWARE = :logger
 else
-  Faraday::Response.register_middleware :pacto_logger => Faraday::Response::PactoLogger
+  Faraday::Response.register_middleware pacto_logger: Faraday::Response::PactoLogger
   LOGGER_MIDDLEWARE = :pacto_logger
 end
 
@@ -45,7 +45,7 @@ module Pacto
 
       def faraday_logger_options
         {
-          :bodies => Pacto.configuration.log_bodies
+          bodies: Pacto.configuration.log_bodies
         }
       end
     end

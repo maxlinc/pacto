@@ -5,7 +5,7 @@ module Faraday
   class Response::PactoLogger < Response::Middleware
     extend Forwardable
 
-    DEFAULT_OPTIONS = { :bodies => false }
+    DEFAULT_OPTIONS = { bodies: false }
 
     def initialize(app, logger = nil, options = {})
       super(app)
