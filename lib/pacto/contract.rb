@@ -58,9 +58,13 @@ module Pacto
       provider.response_for self, pacto_request
     end
 
-    def execute(additional_values = {})
+    def build_request(additional_values = {})
       # FIXME: Do we really need to store on the Contract, or just as a param for #stub_contact! and #execute?
       full_values = values.merge(additional_values)
+      consumer.build_request(self, full_values)
+    end
+
+    def execute(additional_values = {})
       consumer.reenact(self, full_values)
     end
   end

@@ -6,13 +6,14 @@ module Pacto
     property :http_method, required: true
     property :schema, default: {}
     property :path, default: '/'
-    property :headers
+    property :headers, default: {}
     property :params, default: {}
-    property :request_pattern_provider, default: Pacto::RequestPattern
+    property :request_pattern_provider
 
     def initialize(definition)
       mash = Hashie::Mash.new definition
       mash['http_method'] = normalize(mash['http_method'])
+      mash['request_pattern_provider'] ||= Pacto::RequestPattern
       super mash
     end
 
