@@ -28,13 +28,13 @@ module Pacto
 
     def to_s
       contract_name = @contract.nil? ? 'nil' : contract.name
-      citation_string = Pacto::UI.colorize(@citations.join("\n\t\t"), :red)
-      ''"
+      citation_string = successful? ? "None" : "\n\t\t" + Pacto::UI.colorize(@citations.join("\n\t\t"), :red)
+      """
       Investigation:
       \tContract: #{contract_name}
       \tRequest: #{@request}
-      \tCitations: \n\t\t#{citation_string}
-      "''
+      \tCitations: #{citation_string}
+      \n"""
     end
 
     def summary
