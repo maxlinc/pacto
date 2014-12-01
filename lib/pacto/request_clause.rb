@@ -37,6 +37,10 @@ module Pacto
       end
     end
 
+    def required_variables
+      pattern.required_variables # + ...?
+    end
+
     private
 
     def normalize(method)

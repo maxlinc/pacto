@@ -12,6 +12,10 @@ module Pacto
       super
     end
 
+    def required_variables
+      @uri_template.variables
+    end
+
     def to_s
       string = Pacto::UI.colorize_method(@method_pattern.to_s)
       string << " #{@uri_pattern}"
