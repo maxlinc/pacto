@@ -1,6 +1,7 @@
 require 'thor'
 require 'pacto'
 require 'pacto/cli/helpers'
+require 'pacto/cli/simulator'
 
 module Pacto
   module CLI
@@ -43,6 +44,34 @@ module Pacto
         end
 
         validation_summary(tested_contracts, invalid_contracts)
+      end
+
+      desc 'simulate [CONTRACTS...]', 'Simulates requests sent from a consumer to a producer'
+      method_option :interactive, lazy_default: true, desc: 'Allow prompts for input or confirmation'
+      method_option :host, type: :string, desc: 'Override the host in the contract for sending requests'
+      method_option :stub, lazy_default: true, desc: 'Used stubbed responses instead of sending to a real host'
+      method_option :format, default: :default, enum: %w(swagger default), desc: 'The contract format being used'
+      method_option :params, desc: 'A JSON or YAML file with parameters to use for the request'
+      def simulate(*contract_files)
+        contracts = ContractSet.new
+        host, stub, format = options[:host], options[:stub], options[:format]
+
+        each_contract(*contract_files) do |contract_file|
+          contracts << Pacto.load_contract(contract_file, host, format)
+        end
+
+        if stub
+          say_status :host, "#{host} (stubbed)"
+          contracts.stub_providers
+        else
+          say_status :host, "#{host} (live)"
+          WebMock.allow_net_connect!
+        end
+        banner = "Simulating requests for #{contracts.size} APIs"
+        banner << " against host #{host}" unless host.nil?
+        say banner
+
+        Simulator.new(contracts, shell, options).run
       end
 
       private

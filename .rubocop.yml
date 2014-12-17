@@ -21,6 +21,7 @@ AllCops:
     - '**/Rakefile'
     - pacto*.gemspec
   Exclude:
+    - lib/faraday/**/*
     - bin/**/*
     - tmp/**/*
 RSpec/DescribeClass:
